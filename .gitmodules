@@ -1,0 +1,9 @@
+[submodule "core/cmark-gfm"]
+	path = core/cmark-gfm
+	url = https://github.com/github/cmark-gfm.git
+[submodule "web/background/cpp-httplib"]
+	path = web/background/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "core/json"]
+	path = core/json
+	url = https://github.com/nlohmann/json.git
