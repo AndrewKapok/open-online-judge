@@ -1,0 +1,10 @@
+# for ai reference
+MEMORY.md
+memory
+build
+.trae
+bin
+obj
+.agents
+CLAUDE.md
+.vscode/settings.json
