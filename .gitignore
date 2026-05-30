@@ -1,10 +1,14 @@
 # for ai reference
 MEMORY.md
-memory
-build
 .trae
-bin
-obj
 .agents
 CLAUDE.md
+#for build system
+build
+core/x64/
+bin
+obj
+x64
+#for editor
 .vscode/settings.json
+.vs
