@@ -1,0 +1,69 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+
+# VS 风格：4 空格缩进，不使用 Tab
+IndentWidth: 4
+UseTab: Never
+
+# 访问修饰符位于类声明层级（不额外缩进），VS 默认行为
+AccessModifierOffset: -4
+
+# 指针/引用附着在类型名左侧：int* p, const string& s
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# 函数/控制流大括号位于新行（Allman / VS 风格）
+BreakBeforeBraces: Allman
+
+# 类型转换后加空格：(int) 42
+SpaceAfterCStyleCast: true
+
+# 控制语句（if/for/while）左括号前加空格
+SpaceBeforeParens: ControlStatements
+
+# 空括号内不加空格
+SpaceInEmptyParentheses: false
+
+# 括号内不加空格
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# 短函数/循环/条件不合并为单行
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# 命名空间：关闭花括号后添加 // namespace 注释
+FixNamespaceComments: true
+NamespaceIndentation: None
+
+# 构造函数的初始化列表：冒号位于新行起始
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+
+# 行宽限制
+ColumnLimit: 120
+
+# 空行控制
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 连续空行时保留缩进
+IndentCaseLabels: true
+
+# 预处理器指令不缩进
+IndentPPDirectives: None
+
+# 对齐风格：括号对齐
+AlignAfterOpenBracket: Align
+
+# include 排序
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^<.*>'
+    Priority: 1
+  - Regex: '^".*"'
+    Priority: 2

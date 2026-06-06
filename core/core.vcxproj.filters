@@ -15,12 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Problem.h">
+    <ClInclude Include="json\single_include\nlohmann\json.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="contest.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Problem.cpp">
+    <ClCompile Include="contest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

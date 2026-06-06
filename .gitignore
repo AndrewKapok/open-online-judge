@@ -6,6 +6,7 @@ CLAUDE.md
 #for build system
 build
 core/x64/
+core/vc140.pdb
 bin
 obj
 x64
