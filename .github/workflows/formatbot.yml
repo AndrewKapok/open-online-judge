@@ -1,0 +1,90 @@
+name: FormatBot
+
+on:
+  push:
+    branches-ignore:
+      - 'formatbot/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+
+      - name: Run clang-format
+        run: |
+          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+            -not -path '*/cmark-gfm/*' \
+            -not -path '*/json/*' \
+            -not -path '*/cpp-httplib/*' \
+            -not -path './.git/*' \
+            -print0 | xargs -0 clang-format -i -style=file
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push to formatbot branch
+        if: steps.diff.outputs.has_changes == 'true'
+        run: |
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          FORMAT_BRANCH="formatbot/${BRANCH_NAME}"
+
+          git config user.name "formatbot"
+          git config user.email "formatbot@users.noreply.github.com"
+
+          git checkout -b "$FORMAT_BRANCH"
+          git add -A
+          git commit -m "chore: apply clang-format formatting"
+          git push origin "$FORMAT_BRANCH" --force
+
+      - name: Create or update PR
+        if: steps.diff.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          FORMAT_BRANCH="formatbot/${BRANCH_NAME}"
+
+          PR_TITLE="chore: auto-format code with clang-format"
+          PR_BODY=$(cat <<'EOF'
+          This PR applies clang-format formatting to the codebase based on the project's `.clang-format` configuration.
+
+          This is an automated PR created by the FormatBot workflow.
+          EOF
+          )
+
+          EXISTING_PR=$(gh pr list \
+            --head "$FORMAT_BRANCH" \
+            --base "$BRANCH_NAME" \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -z "$EXISTING_PR" ]; then
+            echo "Creating new PR: $FORMAT_BRANCH -> $BRANCH_NAME"
+            gh pr create \
+              --base "$BRANCH_NAME" \
+              --head "$FORMAT_BRANCH" \
+              --title "$PR_TITLE" \
+              --body "$PR_BODY"
+          else
+            echo "PR #$EXISTING_PR already exists, skipping creation."
+          fi
