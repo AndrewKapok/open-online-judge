@@ -19,9 +19,9 @@ constexpr std::chrono::seconds DEFAULT_SESSION_TTL(1800);
  */
 struct Session {
     std::string session_id;                                     ///< Unique session identifier (generated)
-    unsigned int user_id;                                       ///< Associated user ID
+    unsigned int user_id = 0;                                   ///< Associated user ID
     std::string username;                                       ///< Username of the authenticated user
-    UserRole role;                                              ///< Role of the authenticated user
+    UserRole role = UserRole::User;                             ///< Role of the authenticated user
     std::chrono::system_clock::time_point created_at;           ///< Timestamp when the session was created
     std::chrono::seconds ttl{DEFAULT_SESSION_TTL};              ///< Time-to-live duration for the session
 };

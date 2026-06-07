@@ -49,8 +49,9 @@ std::string SessionManager::create_session(unsigned int user_id,
     session.created_at = std::chrono::system_clock::now();
     session.ttl        = DEFAULT_SESSION_TTL;
 
-    sessions_[session.session_id] = std::move(session);
-    return sessions_[session.session_id].session_id;
+    const auto id = session.session_id;
+    sessions_[id] = std::move(session);
+    return id;
 }
 
 std::optional<Session> SessionManager::validate_session(const std::string& session_id)

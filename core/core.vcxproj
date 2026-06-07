@@ -22,12 +22,16 @@
     <ClInclude Include="contest.h" />
     <ClInclude Include="user.h" />
     <ClInclude Include="session.h" />
+    <ClInclude Include="auth.h" />
+    <ClInclude Include="hash.h" />
     <ClInclude Include="json\single_include\nlohmann\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="contest.cpp" />
     <ClCompile Include="user.cpp" />
     <ClCompile Include="session.cpp" />
+    <ClCompile Include="auth.cpp" />
+    <ClCompile Include="hash.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
