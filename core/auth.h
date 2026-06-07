@@ -1,9 +1,10 @@
 #pragma once
-#include <string>
 #include <mutex>
-#include "user.h"
-#include "session.h"
+#include <string>
+
 #include "json/single_include/nlohmann/json.hpp"
+#include "session.h"
+#include "user.h"
 
 using nlohmann::json;
 
@@ -20,7 +21,8 @@ using nlohmann::json;
 /**
  * @brief Result of an authentication operation (register / login).
  */
-struct AuthResult {
+struct AuthResult
+{
     bool success;           ///< Whether the operation succeeded
     std::string message;    ///< Human-readable status message
     std::string session_id; ///< Session ID (non-empty only on successful login)
@@ -37,7 +39,8 @@ struct AuthResult {
  * User data is persisted in a configurable JSON file (default: "data/users.json").
  * Thread-safe via internal mutex.
  */
-class AuthManager {
+class AuthManager
+{
 public:
     /**
      * @brief Construct an AuthManager.
@@ -46,8 +49,7 @@ public:
      * @param data_file        Path to the users JSON data file
      *                         (default: "data/users.json")
      */
-    explicit AuthManager(SessionManager& session_manager,
-                         const std::string& data_file = "data/users.json");
+    explicit AuthManager(SessionManager& session_manager, const std::string& data_file = "data/users.json");
 
     // ── Public API ───────────────────────────────────────────────────────
 
@@ -66,8 +68,7 @@ public:
      * @return AuthResult — success contains the new session_id;
      *         failure contains an error message.
      */
-    AuthResult register_user(const std::string& username,
-                             const std::string& password);
+    AuthResult register_user(const std::string& username, const std::string& password);
 
     /**
      * @brief Authenticate an existing user.
@@ -80,8 +81,7 @@ public:
      * @return AuthResult — success contains a session_id;
      *         failure contains an error message.
      */
-    AuthResult login_user(const std::string& username,
-                          const std::string& password);
+    AuthResult login_user(const std::string& username, const std::string& password);
 
     /**
      * @brief Log out a user by destroying their session.
@@ -151,6 +151,5 @@ private:
      * @param username  Username to look for
      * @return true if the username already exists
      */
-    static bool username_exists(const json& users,
-                                const std::string& username);
+    static bool username_exists(const json& users, const std::string& username);
 };
