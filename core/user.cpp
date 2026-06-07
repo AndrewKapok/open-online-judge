@@ -1,10 +1,7 @@
 #include "user.h"
 
 User::User(unsigned int id, const std::string& username, const std::string& password, UserRole role)
-    : user_id_(id)
-    , username_(username)
-    , password_(password)
-    , role_(role)
+    : user_id_(id), username_(username), password_(password), role_(role)
 {
 }
 

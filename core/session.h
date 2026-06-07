@@ -1,9 +1,10 @@
 #pragma once
-#include <string>
-#include <unordered_map>
-#include <optional>
 #include <chrono>
 #include <mutex>
+#include <optional>
+#include <string>
+#include <unordered_map>
+
 #include "user.h"
 
 /**
@@ -17,13 +18,14 @@ constexpr std::chrono::seconds DEFAULT_SESSION_TTL(1800);
  * Each session is uniquely identified by a session_id and stores
  * essential user context for authenticating subsequent requests.
  */
-struct Session {
-    std::string session_id;                                     ///< Unique session identifier (generated)
-    unsigned int user_id = 0;                                   ///< Associated user ID
-    std::string username;                                       ///< Username of the authenticated user
-    UserRole role = UserRole::User;                             ///< Role of the authenticated user
-    std::chrono::system_clock::time_point created_at;           ///< Timestamp when the session was created
-    std::chrono::seconds ttl{DEFAULT_SESSION_TTL};              ///< Time-to-live duration for the session
+struct Session
+{
+    std::string session_id;                           ///< Unique session identifier (generated)
+    unsigned int user_id = 0;                         ///< Associated user ID
+    std::string username;                             ///< Username of the authenticated user
+    UserRole role = UserRole::User;                   ///< Role of the authenticated user
+    std::chrono::system_clock::time_point created_at; ///< Timestamp when the session was created
+    std::chrono::seconds ttl{DEFAULT_SESSION_TTL};    ///< Time-to-live duration for the session
 };
 
 /**
@@ -33,7 +35,8 @@ struct Session {
  * Thread-safe via internal mutex. Sessions are NOT persisted — they
  * are lost on server restart.
  */
-class SessionManager {
+class SessionManager
+{
 public:
     /**
      * @brief Create a new session for the specified user.
@@ -70,8 +73,8 @@ public:
     bool refresh_session(const std::string& session_id);
 
 private:
-    std::unordered_map<std::string, Session> sessions_;  ///< In-memory session storage
-    mutable std::mutex mutex_;                           ///< Mutex for thread-safe access
+    std::unordered_map<std::string, Session> sessions_; ///< In-memory session storage
+    mutable std::mutex mutex_;                          ///< Mutex for thread-safe access
 
     /**
      * @brief Generate a cryptographically-inspired random session ID.

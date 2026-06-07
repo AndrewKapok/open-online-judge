@@ -1,4 +1,5 @@
 #include "hash.h"
+
 #include <array>
 #include <cstring>
 #include <iomanip>
@@ -79,33 +80,22 @@ constexpr std::uint32_t small_sigma1(std::uint32_t x)
 // Initial hash values (first 32 bits of fractional parts of sqrt of primes)
 // ---------------------------------------------------------------------------
 
-static constexpr std::array<std::uint32_t, 8> H0 = {{
-    0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-    0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
-}};
+static constexpr std::array<std::uint32_t, 8> H0 = {
+    {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19}};
 
 // ---------------------------------------------------------------------------
 // Round constants (first 32 bits of fractional parts of cube root of primes)
 // ---------------------------------------------------------------------------
 
-static constexpr std::array<std::uint32_t, 64> K = {{
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
-    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
-    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
-    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
-    0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
-    0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-}};
+static constexpr std::array<std::uint32_t, 64> K = {
+    {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+     0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+     0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+     0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+     0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+     0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2}};
 
 // ---------------------------------------------------------------------------
 // SHA-256 core
@@ -119,7 +109,8 @@ std::string sha256(const void* data, std::size_t len)
     // 3. Append original bit length as big-endian 64-bit integer
 
     std::vector<std::uint8_t> buf;
-    if (data && len > 0) {
+    if (data && len > 0)
+    {
         auto* bytes = static_cast<const std::uint8_t*>(data);
         buf.assign(bytes, bytes + len);
     }
@@ -128,33 +119,37 @@ std::string sha256(const void* data, std::size_t len)
     buf.push_back(0x80);
 
     // Append zero bytes until (buf.size() % 64 == 56)
-    while (buf.size() % 64 != 56) {
+    while (buf.size() % 64 != 56)
+    {
         buf.push_back(0x00);
     }
 
     // Append length in bits (big-endian)
     std::uint64_t bit_len = static_cast<std::uint64_t>(len) * 8;
-    for (int i = 7; i >= 0; --i) {
+    for (int i = 7; i >= 0; --i)
+    {
         buf.push_back(static_cast<std::uint8_t>((bit_len >> (i * 8)) & 0xff));
     }
 
     // ---- Process each 512-bit block -------------------------------------
     std::array<std::uint32_t, 8> state = H0;
 
-    for (std::size_t offset = 0; offset < buf.size(); offset += 64) {
+    for (std::size_t offset = 0; offset < buf.size(); offset += 64)
+    {
         // Prepare message schedule W[0..63]
         std::array<std::uint32_t, 64> W{};
 
-        for (unsigned t = 0; t < 16; ++t) {
-            W[t] = (static_cast<std::uint32_t>(buf[offset + t * 4])     << 24)
-                 | (static_cast<std::uint32_t>(buf[offset + t * 4 + 1]) << 16)
-                 | (static_cast<std::uint32_t>(buf[offset + t * 4 + 2]) << 8)
-                 | (static_cast<std::uint32_t>(buf[offset + t * 4 + 3]));
+        for (unsigned t = 0; t < 16; ++t)
+        {
+            W[t] = (static_cast<std::uint32_t>(buf[offset + t * 4]) << 24) |
+                   (static_cast<std::uint32_t>(buf[offset + t * 4 + 1]) << 16) |
+                   (static_cast<std::uint32_t>(buf[offset + t * 4 + 2]) << 8) |
+                   (static_cast<std::uint32_t>(buf[offset + t * 4 + 3]));
         }
 
-        for (unsigned t = 16; t < 64; ++t) {
-            W[t] = small_sigma1(W[t - 2]) + W[t - 7]
-                 + small_sigma0(W[t - 15]) + W[t - 16];
+        for (unsigned t = 16; t < 64; ++t)
+        {
+            W[t] = small_sigma1(W[t - 2]) + W[t - 7] + small_sigma0(W[t - 15]) + W[t - 16];
         }
 
         // Initialize working variables
@@ -162,7 +157,8 @@ std::string sha256(const void* data, std::size_t len)
         auto e = state[4], f = state[5], g = state[6], h = state[7];
 
         // Compression main loop
-        for (unsigned t = 0; t < 64; ++t) {
+        for (unsigned t = 0; t < 64; ++t)
+        {
             auto t1 = h + big_sigma1(e) + ch(e, f, g) + K[t] + W[t];
             auto t2 = big_sigma0(a) + maj(a, b, c);
 
@@ -189,7 +185,8 @@ std::string sha256(const void* data, std::size_t len)
 
     // ---- Output (big-endian hex) ----------------------------------------
     std::ostringstream oss;
-    for (auto word : state) {
+    for (auto word : state)
+    {
         oss << std::hex << std::setfill('0') << std::setw(8) << word;
     }
     return oss.str();
@@ -207,7 +204,8 @@ std::string generate_salt(std::size_t byte_count)
 
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
-    for (std::size_t i = 0; i < byte_count; ++i) {
+    for (std::size_t i = 0; i < byte_count; ++i)
+    {
         oss << std::setw(2) << dist(gen);
     }
     return oss.str();
@@ -228,7 +226,8 @@ bool verify_password(const std::string& password, const std::string& salted_hash
 {
     // Find the delimiter separating salt from hash
     auto delim_pos = salted_hash.find('$');
-    if (delim_pos == std::string::npos || delim_pos == 0) {
+    if (delim_pos == std::string::npos || delim_pos == 0)
+    {
         return false;
     }
 

@@ -4,9 +4,10 @@
 /**
  * @brief Enumeration of user roles in the system.
  */
-enum class UserRole {
-    Admin = 0,  ///< Administrator with full system access
-    User = 1    ///< Regular user with limited access
+enum class UserRole
+{
+    Admin = 0, ///< Administrator with full system access
+    User = 1   ///< Regular user with limited access
 };
 
 /**
@@ -15,12 +16,13 @@ enum class UserRole {
  * Stores core user information including credentials and role.
  * Passwords are expected to be stored as salted hashes externally.
  */
-class User {
+class User
+{
 private:
-    unsigned int user_id_;      ///< Unique user identifier
-    std::string username_;      ///< Login username
-    std::string password_;      ///< Password (salted hash)
-    UserRole role_;             ///< User role (Admin or User)
+    unsigned int user_id_; ///< Unique user identifier
+    std::string username_; ///< Login username
+    std::string password_; ///< Password (salted hash)
+    UserRole role_;        ///< User role (Admin or User)
 
 public:
     /**

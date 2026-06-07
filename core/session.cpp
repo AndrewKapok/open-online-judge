@@ -1,6 +1,7 @@
 #include "session.h"
-#include <random>
+
 #include <iomanip>
+#include <random>
 #include <sstream>
 
 // ---------------------------------------------------------------------------
@@ -9,7 +10,7 @@
 
 std::string SessionManager::generate_session_id()
 {
-    static constexpr std::size_t ID_LENGTH = 32;  // 32 hex chars → 128 bit
+    static constexpr std::size_t ID_LENGTH = 32; // 32 hex chars → 128 bit
 
     std::random_device rd;
     std::mt19937_64 gen(rd());
@@ -17,11 +18,12 @@ std::string SessionManager::generate_session_id()
 
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
-    for (std::size_t i = 0; i < ID_LENGTH / sizeof(std::uint64_t) * 2; ++i) {
+    for (std::size_t i = 0; i < ID_LENGTH / sizeof(std::uint64_t) * 2; ++i)
+    {
         oss << std::setw(sizeof(std::uint64_t) * 2) << dist(gen);
     }
     auto id = oss.str();
-    id.resize(ID_LENGTH);  // trim in case of excess
+    id.resize(ID_LENGTH); // trim in case of excess
     return id;
 }
 
@@ -35,19 +37,17 @@ bool SessionManager::is_expired(const Session& session) const
 // Public API
 // ---------------------------------------------------------------------------
 
-std::string SessionManager::create_session(unsigned int user_id,
-                                           const std::string& username,
-                                           UserRole role)
+std::string SessionManager::create_session(unsigned int user_id, const std::string& username, UserRole role)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
     Session session;
     session.session_id = generate_session_id();
-    session.user_id    = user_id;
-    session.username   = username;
-    session.role       = role;
+    session.user_id = user_id;
+    session.username = username;
+    session.role = role;
     session.created_at = std::chrono::system_clock::now();
-    session.ttl        = DEFAULT_SESSION_TTL;
+    session.ttl = DEFAULT_SESSION_TTL;
 
     const auto id = session.session_id;
     sessions_[id] = std::move(session);
@@ -59,11 +59,13 @@ std::optional<Session> SessionManager::validate_session(const std::string& sessi
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto it = sessions_.find(session_id);
-    if (it == sessions_.end()) {
+    if (it == sessions_.end())
+    {
         return std::nullopt;
     }
 
-    if (is_expired(it->second)) {
+    if (is_expired(it->second))
+    {
         sessions_.erase(it);
         return std::nullopt;
     }
@@ -82,11 +84,13 @@ bool SessionManager::refresh_session(const std::string& session_id)
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto it = sessions_.find(session_id);
-    if (it == sessions_.end()) {
+    if (it == sessions_.end())
+    {
         return false;
     }
 
-    if (is_expired(it->second)) {
+    if (is_expired(it->second))
+    {
         sessions_.erase(it);
         return false;
     }
