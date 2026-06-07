@@ -12,9 +12,9 @@ struct testCase
 {
     std::string inputPath;    ///< 输入文件路径
     std::string outputPath;   ///< 标准输出文件路径
-    unsigned int memeryLimit; ///< 内存限制（MB）
-    unsigned int timeLimit;   ///< 时间限制（ms）
-    double score;             ///< 该测试用例分值
+    unsigned int memeryLimit = 0; ///< 内存限制（MB）
+    unsigned int timeLimit = 0;   ///< 时间限制（ms）
+    double score = 0.0;             ///< 该测试用例分值
 };
 void to_json(json& j, const testCase& obj);
 void from_json(const json& j, testCase& obj);
@@ -25,7 +25,7 @@ void from_json(const json& j, testCase& obj);
 struct judgeConfig
 {
     std::vector<testCase> caseList; ///< 测试用例列表
-    unsigned int caseNumber;        ///< 测试用例总数
+    unsigned int caseNumber = 0;        ///< 测试用例总数
     std::string compileArgv;        ///< 编译参数
 };
 void to_json(json& j, const judgeConfig& obj);
@@ -36,10 +36,10 @@ void from_json(const json& j, judgeConfig& obj);
  */
 struct problem
 {
-    unsigned int id;              ///< 题目 ID
+    unsigned int id = 0;              ///< 题目 ID
     std::string markdownFilePath; ///< Markdown 题面文件路径
     std::string htmlFilePath;     ///< HTML 题面文件路径
-    bool disable;                 ///< 是否禁用
+    bool disable = false;                 ///< 是否禁用
     judgeConfig conf;             ///< 判题配置
 };
 void to_json(json& j, const problem& obj);
@@ -51,11 +51,11 @@ void from_json(const json& j, problem& obj);
 class contest
 {
 private:
-    bool disable;                     ///< 是否禁用
-    unsigned long long startTime;     ///< 开始时间（Unix 时间戳）
-    unsigned long long endTime;       ///< 结束时间（Unix 时间戳）
-    unsigned int id;                  ///< 比赛 ID
-    unsigned int problemCount;        ///< 题目数量
+    bool disable = false;                     ///< 是否禁用
+    unsigned long long startTime = 0;     ///< 开始时间（Unix 时间戳）
+    unsigned long long endTime = 0;       ///< 结束时间（Unix 时间戳）
+    unsigned int id = 0;                  ///< 比赛 ID
+    unsigned int problemCount = 0;        ///< 题目数量
     std::vector<problem> problemList; ///< 题目列表
 public:
     contest();

@@ -1,9 +1,7 @@
 #include "contest.h"
 using nlohmann::json;
 
-contest::contest(/* args */)
-{
-}
+contest::contest() = default;
 
 /**
  * @brief 从 JSON 数据构造比赛对象
