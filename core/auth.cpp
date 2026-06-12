@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -143,20 +144,17 @@ json AuthManager::load_users() const
 void AuthManager::save_users(const json& users) const
 {
     // Ensure the parent directory exists
-    auto sep = data_file_.find_last_of("/\\");
-    if (sep != std::string::npos)
+    std::filesystem::path file_path(data_file_);
+    if (file_path.has_parent_path())
     {
-        auto dir = data_file_.substr(0, sep);
-        // Use platform-independent approach: attempt to create dir
-        int ret = 0;
-        std::string mkdir_cmd;
-#ifdef _WIN32
-        mkdir_cmd = "if not exist \"" + dir + "\" mkdir \"" + dir + "\"";
-#else
-        mkdir_cmd = "mkdir -p \"" + dir + "\"";
-#endif
-        ret = std::system(mkdir_cmd.c_str());
-        (void) ret; // ignore failure — the write below will catch errors
+        try
+        {
+            std::filesystem::create_directories(file_path.parent_path());
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::cerr << "[AuthManager] 创建目录失败: " << e.what() << std::endl;
+        }
     }
 
     std::ofstream file(data_file_);
